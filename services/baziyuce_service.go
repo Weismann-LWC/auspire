@@ -22,3 +22,11 @@ func (s *BaziyuceService) Analyze(bazi []models.BaziColumn) *models.BaziyuceResu
 	step1 := s.step1PaiPanDingPan(bazi)
 	result.Steps = append(result.Steps, step1)
 
+	// 第二步：定旺衰，识体性
+	step2 := s.step2DingWangShuai(bazi)
+	result.Steps = append(result.Steps, step2)
+
+	// 第三步：明喜忌，定方向
+	step3 := s.step3MingXiJi(bazi, step2)
+	result.Steps = append(result.Steps, step3)
+
