@@ -1,0 +1,384 @@
+/* 基础样式重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: #ffffff;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 头部样式 */
+.header {
+    margin-bottom: 30px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    margin-right: 20px;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.birth-info {
+    flex: 1;
+}
+
+.date-line {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.date-line .label {
+    color: #999;
+    margin-right: 10px;
+}
+
+/* 导航标签 */
+.nav-tabs {
+    display: flex;
+    border-bottom: 1px solid #444;
+    margin-bottom: 20px;
+}
+
+.tab {
+    padding: 12px 20px;
+    cursor: pointer;
+    color: #999;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tab.active {
+    color: #d4af37;
+    border-bottom-color: #d4af37;
+}
+
+.tab:hover {
+    color: #fff;
+}
+
+/* 八字排盘主体 */
+.bazi-content {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 25px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* 八字柱 */
+.bazi-pillars {
+    margin-bottom: 30px;
+}
+
+.pillar-headers {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.header-item {
+    text-align: center;
+    font-size: 16px;
+    color: #d4af37;
+    font-weight: bold;
+    padding: 10px;
+    background: rgba(212, 175, 55, 0.1);
+    border-radius: 8px;
+}
+
+.pillar-stars {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.star-item {
+    text-align: center;
+    font-size: 14px;
+    color: #fff;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+}
+
+.pillar-ganzhi {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.ganzhi-pair {
+    text-align: center;
+}
+
+.gan, .zhi {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 auto 8px;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 五行颜色 */
+.wood {
+    background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%);
+    color: #fff;
+}
+
+.fire {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #fff;
+}
+
+.earth {
+    background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+    color: #000;
+}
+
+.metal {
+    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+    color: #fff;
+}
+
+.water {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: #fff;
+}
+
+.wuxing-label {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    font-size: 12px;
+}
+
+.gan-wuxing, .zhi-wuxing {
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* 详细信息表格 */
+.detail-table {
+    margin-top: 30px;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 80px repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: start;
+}
+
+.row-label {
+    font-size: 14px;
+    color: #d4af37;
+    font-weight: bold;
+    padding: 10px 0;
+    text-align: right;
+    border-right: 1px solid #444;
+    padding-right: 15px;
+}
+
+.row-data {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.4;
+    min-height: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+}
+
+/* 藏干样式 */
+.canggan {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin: 1px;
+}
+
+.canggan.wood {
+    background: rgba(74, 222, 128, 0.3);
+    color: #4ade80;
+}
+
+.canggan.fire {
+    background: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
+.canggan.earth {
+    background: rgba(234, 179, 8, 0.3);
+    color: #eab308;
+}
+
+.canggan.metal {
+    background: rgba(148, 163, 184, 0.3);
+    color: #94a3b8;
+}
+
+.canggan.water {
+    background: rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+}
+
+/* 神煞特殊样式 */
+.special-row {
+    background: rgba(212, 175, 55, 0.05);
+    border-radius: 8px;
+    padding: 10px;
+    margin: 20px 0;
+}
+
+.shensha-item {
+    display: inline-block;
+    padding: 3px 8px;
+    margin: 2px;
+    background: rgba(212, 175, 55, 0.2);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 4px;
+    font-size: 11px;
+    color: #d4af37;
+}
+
+/* 最后一行样式 */
+.final-label {
+    grid-column: 1;
+}
+
+.final-data {
+    grid-column: 2 / -1;
+    text-align: center;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .user-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .nav-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .pillar-headers,
+    .pillar-stars,
+    .pillar-ganzhi {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .table-row {
+        grid-template-columns: 60px 1fr;
+        gap: 10px;
+    }
+    
+    .table-row .row-data:nth-child(n+3) {
+        grid-column: 2;
+        margin-top: 5px;
+    }
+    
+    .gan, .zhi {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 加载指示器隐藏 */
+.loading-hidden {
+    display: none !important;
+}
+
+.bazi-content {
+    animation: fadeIn 0.8s ease-out;
+}
+
+.ganzhi-pair {
+    transition: transform 0.3s ease;
+}
+
+.ganzhi-pair:hover {
+    transform: translateY(-5px);
+}
+
+.gan, .zhi {
+    transition: all 0.3s ease;
+}
+
+.gan:hover, .zhi:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}

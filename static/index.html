@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>祥瑞珠风 - 生辰八字计算器</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info.logged-in {
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .auth-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-links a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .auth-links a:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .logout-btn {
+            background: rgba(229, 62, 62, 0.1);
+            color: #e53e3e;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(229, 62, 62, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .brand-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .brand-logo {
+            font-size: 36px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        .brand-subtitle {
+            color: #6b7280;
+            font-size: 16px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+        
+        .title {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 35px;
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .result {
+            margin-top: 35px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            display: none;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .bazi-display {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .bazi-column {
+            background: white;
+            padding: 20px 15px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid #f3f4f6;
+        }
+        
+        .bazi-column:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .bazi-column h4 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .bazi-column .gan {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        
+        .bazi-column .zhi {
+            font-size: 20px;
+            color: #6b7280;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .wuxing-info {
+            font-size: 12px;
+            color: #667eea;
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .wuxing-info .gan-wuxing,
+        .wuxing-info .zhi-wuxing {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-weight: 600;
+        }
+        
+        .wuxing-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .wuxing-木 { background: linear-gradient(135deg, #22c55e, #16a34a); }
+        .wuxing-火 { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .wuxing-土 { background: linear-gradient(135deg, #a3a3a3, #737373); }
+        .wuxing-金 { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+        .wuxing-水 { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        
+        .gan-symbol {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .gan-symbol::after {
+            content: attr(data-element);
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .gan-symbol[data-element="木"]::after { background: #22c55e; }
+        .gan-symbol[data-element="火"]::after { background: #ef4444; }
+        .gan-symbol[data-element="土"]::after { background: #737373; }
+        .gan-symbol[data-element="金"]::after { background: #fbbf24; }
+        .gan-symbol[data-element="水"]::after { background: #3b82f6; }
+        
+        .changsheng-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .changsheng-title {
+            text-align: center;
+            color: #2d3748;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .changsheng-timeline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 20px 10px;
+            background: linear-gradient(90deg, 
+                #22c55e 0%, #06b6d4 16.67%, #3b82f6 33.33%, #8b5cf6 50%, 
+                #f59e0b 66.67%, #ef4444 83.33%, #991b1b 100%);
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .changsheng-timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50px;
+        }
+        
+        .timeline-stage {
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            text-align: center;
+            padding: 0 5px;
+        }
+        
+        .timeline-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .timeline-label {
+            font-size: 10px;
+            color: #374151;
+            font-weight: 600;
+        }
+        
+        .changsheng-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .changsheng-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .changsheng-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--border-color, #e5e7eb);
+            transition: all 0.3s ease;
+        }
+        
+        .changsheng-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .changsheng-item .position {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .changsheng-item .changsheng-icon {
+            font-size: 28px;
+            margin: 8px 0;
+            display: block;
+        }
+        
+        .changsheng-item .state {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        
+        .changsheng-item .desc {
+            font-size: 11px;
+            color: #9ca3af;
+            line-height: 1.3;
+            margin-top: 6px;
+        }
+        
+        .error {
+            color: #e53e3e;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 500;
+            font-size: 16px;
+        }
+        
+        .fortune-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        
+        .fortune-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 14px;
+            padding: 12px 24px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            width: auto;
+            display: inline-block;
+            min-width: 150px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 5px 25px 5px;
+        }
+        
+        .fortune-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .fortune-display {
+            margin-top: 25px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            text-align: left;
+            display: none;
+        }
+        
+        .fortune-title {
+            text-align: center;
+            color: #2d3748;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+        
+        .fortune-item {
+            margin-bottom: 20px;
+            padding: 18px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #667eea;
+        }
+        
+        .fortune-item h4 {
+            color: #2d3748;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .fortune-item h4::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #667eea;
+            border-radius: 50%;
+            margin-right: 8px;
+            display: inline-block;
+        }
+        
+        .fortune-item p {
+            color: #6b7280;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        /* 打字机效果样式 */
+        .typewriter {
+            overflow: hidden;
+            white-space: pre-wrap;
+            margin: 0 auto;
+            letter-spacing: .05em;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 25px;
+                margin: 20px;
+            }
+            
+            .brand-logo {
+                font-size: 28px;
+            }
+            
+            .bazi-display {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .bazi-column {
+                padding: 16px 12px;
+            }
+            
+            .bazi-column .gan {
+                font-size: 24px;
+            }
+            
+            .bazi-column .zhi {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 用户信息区域 -->
+        <div id="userInfo" class="user-info">
+            <div id="authLinks" class="auth-links">
+                <a href="/static/login.html">登录</a>
+                <a href="/static/register.html">注册</a>
+            </div>
+            <div id="userDisplay" style="display: none;">
+                <span id="username"></span>
+                <button id="logoutBtn" class="logout-btn">退出</button>
+            </div>
+        </div>
+        
+        <div class="brand-header">
+            <div class="brand-logo">祥瑞珠风</div>
+            <div class="brand-subtitle">传承千年智慧 · 预知命运玄机</div>
+        </div>
+        
+        <h1 class="title">生辰八字计算器</h1>
+        
+        <form id="baziForm">
+            <div class="form-group">
+                <label for="name">尊姓大名</label>
+                <input type="text" id="name" name="name" required placeholder="请输入您的姓名">
+            </div>
+            
+            <div class="form-group">
+                <label for="birthDate">出生日期</label>
+                <input type="date" id="birthDate" name="birthDate" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="birthTime">出生时辰</label>
+                <input type="time" id="birthTime" name="birthTime" required>
+            </div>
+            
+            <button type="submit" id="calculateBtn">推算生辰八字</button>
+        </form>
+        
+        <div id="result" class="result">
+            <h3 id="resultTitle"></h3>
+            <div id="baziDisplay" class="bazi-display"></div>
+            <div id="changshengSection" class="changsheng-section" style="display: none;">
+                <div class="changsheng-title">十二长生时序图</div>
+                
+                <!-- 时序线 -->
+                <div class="changsheng-timeline">
+                    <div class="timeline-stage">
+                        <span class="timeline-icon">🌱</span>
+                        <div class="timeline-label">长生</div>
+                    </div>
+                    <div class="timeline-stage">
+                        <span class="timeline-icon">🛁</span>
+                        <div class="timeline-label">沐浴</div>
+                    </div>
+                    <div class="timeline-stage">
+                        <span class="timeline-icon">👑</span>
+                        <div class="timeline-label">冠带</div>
+                    </div>
+                    <div class="timeline-stage">
+                        <span class="timeline-icon">🏛️</span>
+                        <div class="timeline-label">临官</div>
+                    </div>
+                    <div class="timeline-stage">
+                        <span class="timeline-icon">⭐</span>
+                        <div class="timeline-label">帝旺</div>
+                    </div>
+                    <div class="timeline-stage">
+                        <span class="timeline-icon">📉</span>
+                        <div class="timeline-label">衰</div>
+                    </div>
+                    <div class="timeline-stage">
+                        <span class="timeline-icon">🤒</span>
+                        <div class="timeline-label">病</div>
+                    </div>
+                    <div class="timeline-stage">
+                        <span class="timeline-icon">💀</span>
+                        <div class="timeline-label">死</div>
+                    </div>
+                    <div class="timeline-stage">
+                        <span class="timeline-icon">⚱️</span>
+                        <div class="timeline-label">墓</div>
+                    </div>
+                    <div class="timeline-stage">
+                        <span class="timeline-icon">🚫</span>
+                        <div class="timeline-label">绝</div>
+                    </div>
+                    <div class="timeline-stage">
+                        <span class="timeline-icon">🥚</span>
+                        <div class="timeline-label">胎</div>
+                    </div>
+                    <div class="timeline-stage">
+                        <span class="timeline-icon">🌿</span>
+                        <div class="timeline-label">养</div>
+                    </div>
+                </div>
+                
+                <div id="changshengDisplay" class="changsheng-grid"></div>
+            </div>
+            <div id="fortuneSection" class="fortune-section" style="display: none;">
+                <button id="fortuneBtn" class="fortune-btn">查看流年运势</button>
+                <button id="lifeStageBtn" class="fortune-btn">查看人生阶段分析</button>
+                <button id="xiyongshenBtn" class="fortune-btn">获取喜用神</button>
+                <button id="baziyuceBtn" class="fortune-btn">八字综合分析</button>
+                <button id="paiPanBtn" class="fortune-btn" style="background: linear-gradient(135deg, #d4af37, #ffd700);">详细排盘</button>
+                <div id="fortuneDisplay" class="fortune-display"></div>
+                <div id="lifeStageDisplay" class="fortune-display"></div>
+                <div id="xiyongshenDisplay" class="fortune-display"></div>
+                <div id="baziyuceDisplay" class="fortune-display"></div>
+            </div>
+            <div id="errorMessage" class="error"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('baziForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const birthDate = document.getElementById('birthDate').value;
+            const birthTime = document.getElementById('birthTime').value;
+            
+            const calculateBtn = document.getElementById('calculateBtn');
+            const result = document.getElementById('result');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            calculateBtn.disabled = true;
+            calculateBtn.textContent = '推算中...';
+            result.style.display = 'none';
+            errorMessage.textContent = '';
+            
+            try {
+                const response = await fetch('/api/bazi', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        birthDate: birthDate,
+                        birthTime: birthTime
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('网络请求失败');
+                }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                displayResult(data);
+                
+            } catch (error) {
+                errorMessage.textContent = '推算失败: ' + error.message;
+                result.style.display = 'block';
+            } finally {
+                calculateBtn.disabled = false;
+                calculateBtn.textContent = '推算生辰八字';
+            }
+        });
+        
+        // 五行符号映射
+        function getWuXingSymbol(wuxing) {
+            const symbols = {
+                '木': '🌲',
+                '火': '🔥',
+                '土': '🗻',
+                '金': '⚡',
+                '水': '💧'
+            };
+            return symbols[wuxing] || '●';
+        }
+        
+        // 十二长生状态符号和颜色映射
+        function getChangShengStyle(state) {
+            const styles = {
+                '长生': { icon: '🌱', color: '#22c55e', desc: '新生开始' },
+                '沐浴': { icon: '🛁', color: '#06b6d4', desc: '初步成长' },
+                '冠带': { icon: '👑', color: '#3b82f6', desc: '渐趋成熟' },
+                '临官': { icon: '🏛️', color: '#8b5cf6', desc: '事业显达' },
+                '帝旺': { icon: '👑', color: '#f59e0b', desc: '巅峰状态' },
+                '衰': { icon: '📉', color: '#ef4444', desc: '开始衰退' },
+                '病': { icon: '🤒', color: '#dc2626', desc: '困难重重' },
+                '死': { icon: '💀', color: '#991b1b', desc: '最低谷期' },
+                '墓': { icon: '⚱️', color: '#6b7280', desc: '蛰伏待时' },
+                '绝': { icon: '🚫', color: '#374151', desc: '绝境重生' },
+                '胎': { icon: '🥚', color: '#94a3b8', desc: '孕育希望' },
+                '养': { icon: '🌿', color: '#65a30d', desc: '积蓄力量' }
+            };
+            return styles[state] || { icon: '●', color: '#6b7280', desc: '未知状态' };
+        }
+        
+        function displayResult(data) {
+            const resultTitle = document.getElementById('resultTitle');
+            const baziDisplay = document.getElementById('baziDisplay');
+            const changshengSection = document.getElementById('changshengSection');
+            const changshengDisplay = document.getElementById('changshengDisplay');
+            const result = document.getElementById('result');
+            const fortuneSection = document.getElementById('fortuneSection');
+            
+            resultTitle.textContent = `${data.name} 的生辰八字`;
+            
+            const columns = ['年柱', '月柱', '日柱', '时柱'];
+            baziDisplay.innerHTML = '';
+            
+            data.bazi.forEach((column, index) => {
+                const columnDiv = document.createElement('div');
+                columnDiv.className = 'bazi-column';
+                columnDiv.innerHTML = `
+                    <h4>${columns[index]}</h4>
+                    <div class="gan gan-symbol" data-element="${column.ganWuXing}">${column.gan}</div>
+                    <div class="zhi">${column.zhi}</div>
+                    <div class="wuxing-info">
+                        <span class="gan-wuxing">
+                            <span class="wuxing-icon wuxing-${column.ganWuXing}">${getWuXingSymbol(column.ganWuXing)}</span>
+                            ${column.ganWuXing}
+                        </span>
+                        <span class="zhi-wuxing">
+                            <span class="wuxing-icon wuxing-${column.zhiWuXing}">${getWuXingSymbol(column.zhiWuXing)}</span>
+                            ${column.zhiWuXing}
+                        </span>
+                    </div>
+                `;
+                baziDisplay.appendChild(columnDiv);
+            });
+            
+            // 显示十二长生图
+            if (data.shiErChangSheng && Object.keys(data.shiErChangSheng).length > 0) {
+                changshengDisplay.innerHTML = '';
+                Object.entries(data.shiErChangSheng).forEach(([position, state]) => {
+                    const style = getChangShengStyle(state);
+                    const changshengDiv = document.createElement('div');
+                    changshengDiv.className = 'changsheng-item';
+                    changshengDiv.style.borderLeftColor = style.color;
+                    changshengDiv.innerHTML = `
+                        <div class="position">${position}</div>
+                        <div class="changsheng-icon" style="font-size: 24px; margin: 8px 0;">${style.icon}</div>
+                        <div class="state" style="color: ${style.color};">${state}</div>
+                        <div class="desc" style="font-size: 10px; color: #9ca3af; margin-top: 4px;">${style.desc}</div>
+                    `;
+                    changshengDisplay.appendChild(changshengDiv);
+                });
+                changshengSection.style.display = 'block';
+            }
+            
+            // 存储八字数据供运势分析使用
+            window.baziData = data;
+            
+            // 显示运势按钮
+            fortuneSection.style.display = 'block';
+            
+            result.style.display = 'block';
+            
+            // 添加渐入动画
+            setTimeout(() => {
+                result.style.opacity = '0';
+                result.style.transform = 'translateY(20px)';
+                result.style.transition = 'all 0.5s ease';
+                
+                requestAnimationFrame(() => {
+                    result.style.opacity = '1';
+                    result.style.transform = 'translateY(0)';
+                });
+            }, 50);
+        }
+        
+        // 运势查看功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const fortuneBtn = document.getElementById('fortuneBtn');
+            const fortuneDisplay = document.getElementById('fortuneDisplay');
+            const lifeStageBtn = document.getElementById('lifeStageBtn');
+            const lifeStageDisplay = document.getElementById('lifeStageDisplay');
+            const xiyongshenBtn = document.getElementById('xiyongshenBtn');
+            const xiyongshenDisplay = document.getElementById('xiyongshenDisplay');
+            const baziyuceBtn = document.getElementById('baziyuceBtn');
+            const baziyuceDisplay = document.getElementById('baziyuceDisplay');
+            
+            // 检查登录状态
+            checkLoginStatus();
+            
+            fortuneBtn.addEventListener('click', async function() {
+                if (!window.baziData) {
+                    alert('请先计算生辰八字');
+                    return;
+                }
+                
+                // 检查是否已登录
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('查看运势需要登录，请先登录');
+                    window.location.href = '/static/login.html';
+                    return;
+                }
+                
+                fortuneBtn.disabled = true;
+                fortuneBtn.innerHTML = '<span class="loading-spinner"></span>运势分析中...';
+                
+                try {
+                    const response = await fetch('/api/fortune', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            name: window.baziData.name,
+                            bazi: window.baziData.bazi,
+                            birthDate: document.getElementById('birthDate').value
+                        })
+                    });
+                    
+                    if (response.status === 401) {
+                        // Token过期或无效
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        alert('登录已过期，请重新登录');
+                        window.location.href = '/static/login.html';
+                        return;
+                    }
+                    
+                    if (!response.ok) {
+                        throw new Error('网络请求失败');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    displayFortune(data);
+                    
+                } catch (error) {
+                    alert('运势分析失败: ' + error.message);
+                } finally {
+                    fortuneBtn.disabled = false;
+                    fortuneBtn.textContent = '查看流年运势';
+                }
+            });
+            
+            // 人生阶段分析功能
+            lifeStageBtn.addEventListener('click', async function() {
+                if (!window.baziData) {
+                    alert('请先计算生辰八字');
+                    return;
+                }
+                
+                // 检查是否已登录
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('查看人生阶段分析需要登录，请先登录');
+                    window.location.href = '/static/login.html';
+                    return;
+                }
+                
+                lifeStageBtn.disabled = true;
+                lifeStageBtn.innerHTML = '<span class="loading-spinner"></span>人生阶段分析中...';
+                
+                try {
+                    const response = await fetch('/api/lifestages', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            name: window.baziData.name,
+                            bazi: window.baziData.bazi,
+                            shiErChangSheng: window.baziData.shiErChangSheng
+                        })
+                    });
+                    
+                    if (response.status === 401) {
+                        // Token过期或无效
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        alert('登录已过期，请重新登录');
+                        window.location.href = '/static/login.html';
+                        return;
+                    }
+                    
+                    if (!response.ok) {
+                        throw new Error('网络请求失败');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    displayLifeStages(data);
+                    
+                } catch (error) {
+                    alert('人生阶段分析失败: ' + error.message);
+                } finally {
+                    lifeStageBtn.disabled = false;
+                    lifeStageBtn.textContent = '查看人生阶段分析';
+                }
+            });
+            
+            // 喜用神功能
+            xiyongshenBtn.addEventListener('click', async function() {
+                if (!window.baziData) {
+                    alert('请先计算生辰八字');
+                    return;
+                }
+                
+                xiyongshenBtn.disabled = true;
+                xiyongshenBtn.innerHTML = '<span class="loading-spinner"></span>喜用神分析中...';
+                
+                try {
+                    const response = await fetch('/api/xiyongshen', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            name: window.baziData.name,
+                            bazi: window.baziData.bazi
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('网络请求失败');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    displayXiYongShen(data);
+                    
+                } catch (error) {
+                    alert('喜用神分析失败: ' + error.message);
+                } finally {
+                    xiyongshenBtn.disabled = false;
+                    xiyongshenBtn.textContent = '获取喜用神';
+                }
+            });
+            
+            // 八字综合分析功能
+            baziyuceBtn.addEventListener('click', async function() {
+                if (!window.baziData) {
+                    alert('请先计算生辰八字');
+                    return;
+                }
+                
+                baziyuceBtn.disabled = true;
+                baziyuceBtn.innerHTML = '<span class="loading-spinner"></span>八字综合分析中...';
+                
+                try {
+                    const response = await fetch('/api/baziyuce', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            name: window.baziData.name,
+                            bazi: window.baziData.bazi
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('网络请求失败');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    displayBaziyuce(data);
+                    
+                } catch (error) {
+                    alert('八字综合分析失败: ' + error.message);
+                } finally {
+                    baziyuceBtn.disabled = false;
+                    baziyuceBtn.textContent = '八字综合分析';
+                }
+            });
+            
+            // 详细排盘功能
+            document.getElementById('paiPanBtn').addEventListener('click', function() {
+                if (!window.baziData) {
+                    alert('请先计算生辰八字');
+                    return;
+                }
+                
+                // 构建排盘页面URL，传递八字数据参数
+                const params = new URLSearchParams({
+                    name: window.baziData.name,
+                    birthDate: document.getElementById('birthDate').value,
+                    birthTime: document.getElementById('birthTime').value
+                });
+                
+                // 跳转到排盘页面
+                window.open(`/paipan?${params.toString()}`, '_blank');
+            });
+            
+            // 退出登录功能
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                checkLoginStatus();
+            });
+        });
+        
+        // 检查登录状态
+        function checkLoginStatus() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            const authLinks = document.getElementById('authLinks');
+            const userDisplay = document.getElementById('userDisplay');
+            const username = document.getElementById('username');
+            
+            if (token && user) {
+                try {
+                    const userData = JSON.parse(user);
+                    authLinks.style.display = 'none';
+                    userDisplay.style.display = 'flex';
+                    username.textContent = `欢迎，${userData.username}`;
+                } catch (e) {
+                    // 如果用户数据格式错误，清除并显示登录链接
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    authLinks.style.display = 'flex';
+                    userDisplay.style.display = 'none';
+                }
+            } else {
+                authLinks.style.display = 'flex';
+                userDisplay.style.display = 'none';
+            }
+        }
+        
+        function displayFortune(data) {
+            const fortuneDisplay = document.getElementById('fortuneDisplay');
+            
+            const fortuneItems = [
+                { title: '整体运势', content: data.overallFortune },
+                { title: '事业运势', content: data.career },
+                { title: '财运分析', content: data.wealth },
+                { title: '健康运势', content: data.health },
+                { title: '感情运势', content: data.relationship },
+                { title: '人生建议', content: data.advice }
+            ];
+            
+            let fortuneHTML = `<div class="fortune-title">${data.name} 的 ${data.currentYear || '2024'} 年流年运势</div>`;
+            
+            fortuneItems.forEach(item => {
+                if (item.content) {
+                    fortuneHTML += `
+                        <div class="fortune-item">
+                            <h4>${item.title}</h4>
+                            <p>${item.content}</p>
+                        </div>
+                    `;
+                }
+            });
+            
+            fortuneDisplay.innerHTML = fortuneHTML;
+            fortuneDisplay.style.display = 'block';
+            
+            // 添加渐入动画
+            setTimeout(() => {
+                fortuneDisplay.style.opacity = '0';
+                fortuneDisplay.style.transform = 'translateY(20px)';
+                fortuneDisplay.style.transition = 'all 0.5s ease';
+                
+                requestAnimationFrame(() => {
+                    fortuneDisplay.style.opacity = '1';
+                    fortuneDisplay.style.transform = 'translateY(0)';
+                });
+            }, 50);
+        }
+        
+        function displayLifeStages(data) {
+            const lifeStageDisplay = document.getElementById('lifeStageDisplay');
+            
+            const stages = [
+                { key: 'childhood', title: '童年至少年时期 (0-15岁)', icon: '🌱' },
+                { key: 'youth', title: '青年时期 (16-30岁)', icon: '🌿' },
+                { key: 'middle', title: '中年时期 (31-45岁)', icon: '🌳' },
+                { key: 'later', title: '中老年至晚年时期 (46岁以后)', icon: '🍂' }
+            ];
+            
+            let lifeStageHTML = `<div class="fortune-title">${data.name} 的人生阶段分析</div>`;
+            
+            stages.forEach(stage => {
+                if (data.analysis[stage.key]) {
+                    lifeStageHTML += `
+                        <div class="fortune-item">
+                            <h4>${stage.icon} ${stage.title}</h4>
+                            <p>${data.analysis[stage.key]}</p>
+                        </div>
+                    `;
+                }
+            });
+            
+            lifeStageDisplay.innerHTML = lifeStageHTML;
+            lifeStageDisplay.style.display = 'block';
+            
+            // 添加渐入动画
+            setTimeout(() => {
+                lifeStageDisplay.style.opacity = '0';
+                lifeStageDisplay.style.transform = 'translateY(20px)';
+                lifeStageDisplay.style.transition = 'all 0.5s ease';
+                
+                requestAnimationFrame(() => {
+                    lifeStageDisplay.style.opacity = '1';
+                    lifeStageDisplay.style.transform = 'translateY(0)';
+                });
+            }, 50);
+        }
+        
+        function displayXiYongShen(data) {
+            const xiyongshenDisplay = document.getElementById('xiyongshenDisplay');
+            
+            let xiyongshenHTML = `<div class="fortune-title">${data.name} 的喜用神分析</div>`;
+            
+            xiyongshenHTML += `<div class="fortune-item">`;
+            xiyongshenHTML += `<h4>日主分析</h4>`;
+            xiyongshenHTML += `<p>您的日主为：<strong>${data.riZhu}</strong>，五行属：<strong>${data.riZhuStrength}</strong></p>`;
+            xiyongshenHTML += `</div>`;
+            
+            xiyongshenHTML += `<div class="fortune-item">`;
+            xiyongshenHTML += `<h4>五行得分</h4>`;
+            xiyongshenHTML += `<p>`;
+            for (const [wuxing, score] of Object.entries(data.wuXingScores)) {
+                xiyongshenHTML += `${wuxing}: ${score}分&nbsp;&nbsp;`;
+            }
+            xiyongshenHTML += `</p>`;
+            xiyongshenHTML += `</div>`;
+            
+            xiyongshenHTML += `<div class="fortune-item">`;
+            xiyongshenHTML += `<h4>喜用神</h4>`;
+            xiyongshenHTML += `<p>根据您的八字分析，您的喜用神为：<strong style="color: #ff6b6b; font-size: 18px;">${data.xiYongShen}</strong></p>`;
+            xiyongshenHTML += `</div>`;
+            
+            xiyongshenHTML += `<div class="fortune-item">`;
+            xiyongshenHTML += `<h4>分析逻辑</h4>`;
+            xiyongshenHTML += `<div id="logicDisplay" style="min-height: 100px;"></div>`;
+            xiyongshenHTML += `</div>`;
+            
+            xiyongshenDisplay.innerHTML = xiyongshenHTML;
+            xiyongshenDisplay.style.display = 'block';
+            
+            // 添加打字机效果显示分析逻辑
+            setTimeout(() => {
+                typeWriterLogic(data.logic, "logicDisplay");
+            }, 100);
+            
+            // 添加渐入动画
+            setTimeout(() => {
+                xiyongshenDisplay.style.opacity = '0';
+                xiyongshenDisplay.style.transform = 'translateY(20px)';
+                xiyongshenDisplay.style.transition = 'all 0.5s ease';
+                
+                requestAnimationFrame(() => {
+                    xiyongshenDisplay.style.opacity = '1';
+                    xiyongshenDisplay.style.transform = 'translateY(0)';
+                });
+            }, 50);
+        }
+        
+        function displayBaziyuce(data) {
+            const baziyuceDisplay = document.getElementById('baziyuceDisplay');
+            
+            let baziyuceHTML = `<div class="fortune-title">${data.name} 的八字综合分析</div>`;
+            
+            // 为每个分析步骤创建显示区域
+            data.steps.forEach((step, index) => {
+                baziyuceHTML += `<div class="fortune-item">`;
+                baziyuceHTML += `<h4>${step.title}</h4>`;
+                baziyuceHTML += `<div id="step${index}Display" style="min-height: 50px;"></div>`;
+                baziyuceHTML += `</div>`;
+            });
+            
+            baziyuceDisplay.innerHTML = baziyuceHTML;
+            baziyuceDisplay.style.display = 'block';
+            
+            // 为每个步骤添加打字机效果
+            setTimeout(() => {
+                data.steps.forEach((step, index) => {
+                    typeWriterLogic(step.content, `step${index}Display`);
+                });
+            }, 100);
+            
+            // 添加渐入动画
+            setTimeout(() => {
+                baziyuceDisplay.style.opacity = '0';
+                baziyuceDisplay.style.transform = 'translateY(20px)';
+                baziyuceDisplay.style.transition = 'all 0.5s ease';
+                
+                requestAnimationFrame(() => {
+                    baziyuceDisplay.style.opacity = '1';
+                    baziyuceDisplay.style.transform = 'translateY(0)';
+                });
+            }, 50);
+        }
+        
+        // 打字机效果函数
+        function typeWriterLogic(logicLines, elementId) {
+            const logicDisplay = document.getElementById(elementId);
+            let lineIndex = 0;
+            let charIndex = 0;
+            let currentLine = "";
+            
+            function typeLine() {
+                if (lineIndex < logicLines.length) {
+                    const line = logicLines[lineIndex];
+                    if (charIndex < line.length) {
+                        currentLine += line.charAt(charIndex);
+                        logicDisplay.innerHTML = currentLine.replace(/\n/g, "<br>");
+                        charIndex++;
+                        setTimeout(typeLine, 30); // 打字速度
+                    } else {
+                        currentLine += "<br><br>";
+                        logicDisplay.innerHTML = currentLine;
+                        lineIndex++;
+                        charIndex = 0;
+                        setTimeout(typeLine, 500); // 行间延迟
+                    }
+                }
+            }
+            
+            typeLine();
+        }
+    </script>
+</body>
+</html>

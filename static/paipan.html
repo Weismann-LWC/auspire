@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>八字排盘 - Auspire</title>
+    <link rel="stylesheet" href="/static/paipan.css">
+</head>
+<body>
+    <!-- 加载指示器 -->
+    <div id="loading" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+        <div style="text-align: center; color: white;">
+            <div style="width: 50px; height: 50px; border: 3px solid #333; border-top: 3px solid #d4af37; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+            <p>正在加载八字排盘...</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- 头部信息 -->
+        <div class="header">
+            <div class="user-info">
+                <div class="avatar">
+                    <span id="gender">男</span>
+                </div>
+                <div class="birth-info">
+                    <div class="date-line">
+                        <span class="label">公历:</span>
+                        <span id="solar-date">1995年08月12日 20:00</span>
+                    </div>
+                    <div class="date-line">
+                        <span class="label">农历:</span>
+                        <span id="lunar-date">1995年七月十七 戌时</span>
+                    </div>
+                    <div class="date-line">
+                        <span class="label">真太阳时:</span>
+                        <span id="true-solar-time">1995年08月12日 20:00</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 导航标签 -->
+            <div class="nav-tabs">
+                <span class="tab">基本信息</span>
+                <span class="tab active">基础命盘</span>
+                <span class="tab">专业细盘</span>
+                <span class="tab">大运命盘</span>
+                <span class="tab">流年命</span>
+            </div>
+        </div>
+
+        <!-- 八字排盘主体 -->
+        <div class="bazi-content">
+            <!-- 八字柱 -->
+            <div class="bazi-pillars">
+                <div class="pillar-headers">
+                    <div class="header-item">年柱</div>
+                    <div class="header-item">月柱</div>
+                    <div class="header-item">日柱</div>
+                    <div class="header-item">时柱</div>
+                </div>
+                
+                <div class="pillar-stars">
+                    <div class="star-item">比肩</div>
+                    <div class="star-item">劫财</div>
+                    <div class="star-item">元男</div>
+                    <div class="star-item">伤官</div>
+                </div>
+
+                <div class="pillar-ganzhi">
+                    <div class="ganzhi-pair">
+                        <div class="gan wood">乙</div>
+                        <div class="zhi water">亥</div>
+                        <div class="wuxing-label">
+                            <span class="gan-wuxing">木</span>
+                            <span class="zhi-wuxing">水</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ganzhi-pair">
+                        <div class="gan metal">甲</div>
+                        <div class="zhi earth">申</div>
+                        <div class="wuxing-label">
+                            <span class="gan-wuxing">木</span>
+                            <span class="zhi-wuxing">金</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ganzhi-pair">
+                        <div class="gan wood">乙</div>
+                        <div class="zhi water">亥</div>
+                        <div class="wuxing-label">
+                            <span class="gan-wuxing">木</span>
+                            <span class="zhi-wuxing">水</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ganzhi-pair">
+                        <div class="gan fire">丙</div>
+                        <div class="zhi earth">戌</div>
+                        <div class="wuxing-label">
+                            <span class="gan-wuxing">火</span>
+                            <span class="zhi-wuxing">土</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 详细信息表格 -->
+            <div class="detail-table">
+                <div class="table-row">
+                    <div class="row-label">藏干</div>
+                    <div class="row-data">
+                        <span class="canggan wood">甲木</span>
+                        <span class="canggan water">壬水</span>
+                    </div>
+                    <div class="row-data">
+                        <span class="canggan wood">甲木</span>
+                        <span class="canggan water">壬水</span>
+                        <span class="canggan earth">戊土</span>
+                    </div>
+                    <div class="row-data">
+                        <span class="canggan wood">甲木</span>
+                        <span class="canggan water">壬水</span>
+                    </div>
+                    <div class="row-data">
+                        <span class="canggan metal">辛金</span>
+                        <span class="canggan fire">丁火</span>
+                    </div>
+                </div>
+
+                <div class="table-row">
+                    <div class="row-label">副星</div>
+                    <div class="row-data">正印<br>劫财</div>
+                    <div class="row-data">正官<br>正印<br>正财</div>
+                    <div class="row-data">正印<br>劫财</div>
+                    <div class="row-data">正财<br>七杀<br>食神</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="row-label">纳音</div>
+                    <div class="row-data">山头火</div>
+                    <div class="row-data">泉中水</div>
+                    <div class="row-data">山头火</div>
+                    <div class="row-data">屋上土</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="row-label">星运</div>
+                    <div class="row-data">死</div>
+                    <div class="row-data">胎</div>
+                    <div class="row-data">死</div>
+                    <div class="row-data">墓</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="row-label">自坐</div>
+                    <div class="row-data">死</div>
+                    <div class="row-data">绝</div>
+                    <div class="row-data">死</div>
+                    <div class="row-data">墓</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="row-label">空亡</div>
+                    <div class="row-data">申酉</div>
+                    <div class="row-data">午未</div>
+                    <div class="row-data">申酉</div>
+                    <div class="row-data">午未</div>
+                </div>
+
+                <div class="table-row special-row">
+                    <div class="row-label">神煞</div>
+                    <div class="row-data">
+                        <div class="shensha-item">国印</div>
+                    </div>
+                    <div class="row-data">
+                        <div class="shensha-item">天乙</div>
+                        <div class="shensha-item">红艳</div>
+                        <div class="shensha-item">德秀</div>
+                        <div class="shensha-item">龙德</div>
+                        <div class="shensha-item">劫煞</div>
+                    </div>
+                    <div class="row-data">
+                        <div class="shensha-item">国印</div>
+                        <div class="shensha-item">十灵日</div>
+                        <div class="shensha-item">天罗</div>
+                        <div class="shensha-item">假童子</div>
+                    </div>
+                    <div class="row-data">
+                        <div class="shensha-item">天喜</div>
+                        <div class="shensha-item">德秀</div>
+                        <div class="shensha-item">龙德</div>
+                        <div class="shensha-item">贵宿</div>
+                        <div class="shensha-item">流霞</div>
+                    </div>
+                </div>
+
+                <div class="table-row">
+                    <div class="row-label final-label">空亡</div>
+                    <div class="row-data final-data" colspan="4">日空亡<br>年空亡</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/paipan.js"></script>
+</body>
+</html>

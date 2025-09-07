@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排盘测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .paipan-btn {
+            background: linear-gradient(135deg, #d4af37, #ffd700);
+            color: #000;
+            font-weight: bold;
+        }
+        .description {
+            margin: 20px 0;
+            padding: 15px;
+            background: #e8f4fd;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🌟 八字排盘系统测试</h1>
+        
+        <div class="description">
+            <h3>✨ 新功能介绍</h3>
+            <p>我们已经成功实现了参考现代八字排盘APP风格的网页界面，包括：</p>
+            <ul>
+                <li>🎨 现代化的深色主题设计</li>
+                <li>🔮 圆形五行元素和渐变效果</li>
+                <li>📊 详细的八字信息展示（主星、藏干、副星、纳音、星运、自坐、空亡、神煞）</li>
+                <li>📱 响应式布局，支持移动端</li>
+                <li>⚡ 动画效果和交互体验</li>
+            </ul>
+        </div>
+        
+        <h3>🚀 快速测试链接</h3>
+        <div>
+            <a href="http://localhost:8080/" class="btn">
+                🏠 返回首页
+            </a>
+            <a href="http://localhost:8080/paipan" class="btn paipan-btn">
+                🔍 查看排盘页面
+            </a>
+            <a href="http://localhost:8080/paipan?name=测试用户&birthDate=1990-03-15&birthTime=14:30" class="btn paipan-btn">
+                📋 查看示例排盘
+            </a>
+        </div>
+        
+        <div class="description">
+            <h3>🎯 使用说明</h3>
+            <ol>
+                <li>访问首页，输入姓名、生日和时间</li>
+                <li>点击"推算生辰八字"按钮</li>
+                <li>在结果页面点击"详细排盘"按钮</li>
+                <li>新窗口将打开现代化的排盘界面</li>
+            </ol>
+        </div>
+        
+        <div class="description">
+            <h3>🔧 技术实现</h3>
+            <p>后端功能模块化重构：</p>
+            <ul>
+                <li>✅ <code>zhuxing_service.go</code> - 主星（十神）计算</li>
+                <li>✅ <code>canggan_service.go</code> - 藏干计算</li>
+                <li>✅ <code>fuxing_service.go</code> - 副星计算</li>
+                <li>✅ <code>nayin_service.go</code> - 纳音计算</li>
+                <li>✅ <code>xingyun_service.go</code> - 星运计算</li>
+                <li>✅ <code>zizuo_service.go</code> - 自坐计算</li>
+                <li>✅ <code>kongwang_service.go</code> - 空亡计算</li>
+                <li>✅ <code>shensha_service.go</code> - 神煞计算</li>
+            </ul>
+            <p>前端界面参考现代八字排盘APP设计，实现了专业的排盘展示效果。</p>
+        </div>
+    </div>
+    
+    <script>
+        // 简单的页面增强效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // 添加点击效果
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

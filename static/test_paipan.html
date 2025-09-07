@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排盘界面测试</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .test-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .test-link {
+            display: block;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+        .test-link:hover {
+            transform: translateY(-2px);
+        }
+        .test-link.special {
+            background: linear-gradient(135deg, #d4af37, #ffd700);
+            color: #000;
+        }
+        .features {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .features h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .features ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .features li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .features li:before {
+            content: "✅ ";
+            margin-right: 10px;
+        }
+        .iframe-container {
+            margin-top: 30px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .iframe-container iframe {
+            width: 100%;
+            height: 800px;
+            border: none;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-online {
+            background: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+        }
+        .status-offline {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔮 八字排盘界面测试</h1>
+        
+        <div id="server-status" style="text-align: center; margin-bottom: 20px;">
+            <span id="status-indicator" class="status-indicator status-offline"></span>
+            <span id="status-text">检查服务器状态中...</span>
+        </div>
+
+        <div class="test-links">
+            <a href="http://localhost:8080/" class="test-link">
+                🏠 主页
+            </a>
+            <a href="http://localhost:8080/paipan" class="test-link special" target="_blank">
+                🔍 排盘页面（新窗口）
+            </a>
+            <a href="http://localhost:8080/paipan?name=测试用户&birthDate=1990-03-15&birthTime=14:30" class="test-link special" target="_blank">
+                📋 示例排盘（新窗口）
+            </a>
+            <a href="#" onclick="loadInFrame()" class="test-link">
+                📺 在框架中加载排盘
+            </a>
+        </div>
+
+        <div class="features">
+            <h3>🎨 界面特色功能</h3>
+            <ul>
+                <li>现代化深色主题设计，金色点缀效果</li>
+                <li>圆形五行元素展示，直观的颜色编码</li>
+                <li>完整的八字信息：主星、藏干、副星、纳音、星运、自坐、空亡、神煞</li>
+                <li>响应式设计，支持移动端和桌面端</li>
+                <li>动画效果和交互体验</li>
+                <li>专业排盘布局，参考现代八字APP设计</li>
+            </ul>
+        </div>
+
+        <div class="features">
+            <h3>🔧 技术检查</h3>
+            <ul>
+                <li id="css-check">CSS样式加载: <span style="color: orange;">检查中...</span></li>
+                <li id="js-check">JavaScript功能: <span style="color: orange;">检查中...</span></li>
+                <li id="api-check">API接口: <span style="color: orange;">检查中...</span></li>
+                <li id="responsive-check">响应式设计: <span style="color: green;">✓ 已支持</span></li>
+            </ul>
+        </div>
+
+        <div id="iframe-section" class="iframe-container" style="display: none;">
+            <iframe id="paipan-frame" src=""></iframe>
+        </div>
+    </div>
+
+    <script>
+        // 检查服务器状态
+        async function checkServerStatus() {
+            try {
+                const response = await fetch('http://localhost:8080/health');
+                const data = await response.json();
+                
+                document.getElementById('status-indicator').className = 'status-indicator status-online';
+                document.getElementById('status-text').textContent = '服务器在线 ✅';
+                
+                // 继续检查其他资源
+                checkResources();
+                
+            } catch (error) {
+                document.getElementById('status-indicator').className = 'status-indicator status-offline';
+                document.getElementById('status-text').textContent = '服务器离线 ❌';
+            }
+        }
+
+        // 检查资源加载
+        async function checkResources() {
+            // 检查CSS
+            try {
+                const cssResponse = await fetch('http://localhost:8080/static/paipan.css');
+                if (cssResponse.ok) {
+                    document.getElementById('css-check').innerHTML = 'CSS样式加载: <span style="color: green;">✓ 正常</span>';
+                } else {
+                    document.getElementById('css-check').innerHTML = 'CSS样式加载: <span style="color: red;">✗ 失败</span>';
+                }
+            } catch (error) {
+                document.getElementById('css-check').innerHTML = 'CSS样式加载: <span style="color: red;">✗ 错误</span>';
+            }
+
+            // 检查JS
+            try {
+                const jsResponse = await fetch('http://localhost:8080/static/paipan.js');
+                if (jsResponse.ok) {
+                    document.getElementById('js-check').innerHTML = 'JavaScript功能: <span style="color: green;">✓ 正常</span>';
+                } else {
+                    document.getElementById('js-check').innerHTML = 'JavaScript功能: <span style="color: red;">✗ 失败</span>';
+                }
+            } catch (error) {
+                document.getElementById('js-check').innerHTML = 'JavaScript功能: <span style="color: red;">✗ 错误</span>';
+            }
+
+            // 检查API
+            try {
+                const apiResponse = await fetch('http://localhost:8080/api/bazi', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: '测试',
+                        birthDate: '1990-01-01',
+                        birthTime: '12:00'
+                    })
+                });
+                if (apiResponse.ok) {
+                    document.getElementById('api-check').innerHTML = 'API接口: <span style="color: green;">✓ 正常</span>';
+                } else {
+                    document.getElementById('api-check').innerHTML = 'API接口: <span style="color: red;">✗ 失败</span>';
+                }
+            } catch (error) {
+                document.getElementById('api-check').innerHTML = 'API接口: <span style="color: red;">✗ 错误</span>';
+            }
+        }
+
+        // 在框架中加载排盘页面
+        function loadInFrame() {
+            const iframe = document.getElementById('paipan-frame');
+            const container = document.getElementById('iframe-section');
+            
+            iframe.src = 'http://localhost:8080/paipan?name=框架测试&birthDate=1995-08-12&birthTime=20:00';
+            container.style.display = 'block';
+            
+            // 滚动到iframe位置
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 页面加载时检查状态
+        document.addEventListener('DOMContentLoaded', function() {
+            checkServerStatus();
+        });
+
+        // 每30秒检查一次服务器状态
+        setInterval(checkServerStatus, 30000);
+    </script>
+</body>
+</html>

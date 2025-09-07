@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>排盘调试页面</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .debug-container { background: white; padding: 20px; border-radius: 10px; }
+        .test-btn { 
+            display: inline-block; 
+            padding: 10px 20px; 
+            margin: 10px; 
+            background: #007bff; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            border: none; 
+            cursor: pointer; 
+        }
+        .test-btn:hover { background: #0056b3; }
+        .test-btn.success { background: #28a745; }
+        .test-btn.danger { background: #dc3545; }
+        .result { margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px; }
+        pre { background: #e9ecef; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="debug-container">
+        <h1>🔧 八字排盘调试工具</h1>
+        
+        <h3>快速测试</h3>
+        <button class="test-btn" onclick="testHealth()">测试服务器状态</button>
+        <button class="test-btn" onclick="testAPI()">测试八字API</button>
+        <button class="test-btn" onclick="testCSS()">测试CSS加载</button>
+        <button class="test-btn" onclick="testJS()">测试JS加载</button>
+        <button class="test-btn" onclick="openPaipan()">打开排盘页面</button>
+        
+        <div id="results" class="result" style="display:none;">
+            <h4>测试结果:</h4>
+            <pre id="output"></pre>
+        </div>
+        
+        <h3>问题排查</h3>
+        <ul>
+            <li><strong>CSS加载问题</strong>: 检查 /static/paipan.css 是否可访问</li>
+            <li><strong>JS加载问题</strong>: 检查 /static/paipan.js 是否可访问</li>
+            <li><strong>API问题</strong>: 检查 /api/bazi 接口是否正常</li>
+            <li><strong>路由问题</strong>: 检查 /paipan 路由是否配置正确</li>
+        </ul>
+        
+        <h3>修复状态</h3>
+        <ul>
+            <li>✅ <strong>CSS/JS路径修复</strong>: 已将相对路径改为绝对路径</li>
+            <li>✅ <strong>加载指示器</strong>: 添加了加载动画和隐藏逻辑</li>
+            <li>✅ <strong>错误处理</strong>: 添加了详细的日志和错误处理</li>
+            <li>✅ <strong>调试信息</strong>: 添加了console.log用于调试</li>
+        </ul>
+        
+        <h3>直接链接</h3>
+        <a href="http://localhost:8080/" target="_blank" class="test-btn">主页</a>
+        <a href="http://localhost:8080/paipan" target="_blank" class="test-btn">排盘页面</a>
+        <a href="http://localhost:8080/paipan?name=测试&birthDate=1990-03-15&birthTime=14:30" target="_blank" class="test-btn">示例排盘</a>
+        <a href="http://localhost:8080/static/test_paipan.html" target="_blank" class="test-btn">测试页面</a>
+    </div>
+
+    <script>
+        function showResult(title, content, type = 'info') {
+            const results = document.getElementById('results');
+            const output = document.getElementById('output');
+            
+            results.style.display = 'block';
+            output.innerHTML = `[${new Date().toLocaleTimeString()}] ${title}\n${content}`;
+            
+            results.style.borderLeft = type === 'success' ? '4px solid #28a745' : 
+                                     type === 'error' ? '4px solid #dc3545' : '4px solid #007bff';
+        }
+
+        async function testHealth() {
+            try {
+                const response = await fetch('http://localhost:8080/health');
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('✅ 服务器状态正常', JSON.stringify(data, null, 2), 'success');
+                } else {
+                    showResult('❌ 服务器状态异常', `HTTP ${response.status}: ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                showResult('❌ 无法连接服务器', error.message, 'error');
+            }
+        }
+
+        async function testAPI() {
+            try {
+                const response = await fetch('http://localhost:8080/api/bazi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: '测试用户',
+                        birthDate: '1990-03-15',
+                        birthTime: '14:30'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('✅ 八字API正常', `名字: ${data.name}\n八字柱数: ${data.bazi.length}\n主星示例: ${data.bazi[0].zhuXing}`, 'success');
+                } else {
+                    showResult('❌ 八字API异常', `HTTP ${response.status}: ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                showResult('❌ API调用失败', error.message, 'error');
+            }
+        }
+
+        async function testCSS() {
+            try {
+                const response = await fetch('http://localhost:8080/static/paipan.css');
+                if (response.ok) {
+                    const size = response.headers.get('content-length');
+                    showResult('✅ CSS文件正常', `文件大小: ${size} 字节\nContent-Type: ${response.headers.get('content-type')}`, 'success');
+                } else {
+                    showResult('❌ CSS文件异常', `HTTP ${response.status}: ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                showResult('❌ CSS加载失败', error.message, 'error');
+            }
+        }
+
+        async function testJS() {
+            try {
+                const response = await fetch('http://localhost:8080/static/paipan.js');
+                if (response.ok) {
+                    const size = response.headers.get('content-length');
+                    showResult('✅ JS文件正常', `文件大小: ${size} 字节\nContent-Type: ${response.headers.get('content-type')}`, 'success');
+                } else {
+                    showResult('❌ JS文件异常', `HTTP ${response.status}: ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                showResult('❌ JS加载失败', error.message, 'error');
+            }
+        }
+
+        function openPaipan() {
+            window.open('http://localhost:8080/paipan?name=调试测试&birthDate=1995-08-12&birthTime=20:00', '_blank');
+            showResult('🚀 排盘页面已打开', '请检查新窗口中的排盘页面是否正常显示', 'info');
+        }
+
+        // 自动执行基础检查
+        window.onload = function() {
+            testHealth();
+        };
+    </script>
+</body>
+</html>
