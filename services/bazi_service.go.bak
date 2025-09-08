@@ -1,10 +1,10 @@
 package services
 
 import (
-	"auspire/models"
-	"auspire/services/solarterm"
 	"fmt"
 	"time"
+	"auspire/models"
+	"auspire/services/solarterm"
 )
 
 var (
@@ -112,7 +112,6 @@ func (s *BaziService) calculateBaziColumns(birthDate, birthTime string) ([]model
 	}
 
 	year := parsedDate.Year()
-	// month := int(parsedDate.Month())  // 删除未使用的变量
 	hour := parsedTime.Hour()
 
 	yearColumn := s.calculateYearColumn(year)
@@ -153,20 +152,6 @@ func (s *BaziService) calculateYearColumn(year int) models.BaziColumn {
 // 立夏(5/6) 开始为巳月，芒种(6/6) 开始为午月，小暑(7/7) 开始为未月
 // 立秋(8/8) 开始为申月，白露(9/8) 开始为酉月，寒露(10/8) 开始为戌月
 // 立冬(11/8) 开始为亥月，大雪(12/7) 开始为子月，小寒(1/6) 开始为丑月
-//
-// 节气与地支详细对应关系：
-// 1. 寅月：立春(2/4) - 雨水(2/19) → 对应地支"寅"
-// 2. 卯月：惊蛰(3/6) - 春分(3/21) → 对应地支"卯"  
-// 3. 辰月：清明(4/5) - 谷雨(4/20) → 对应地支"辰"
-// 4. 巳月：立夏(5/6) - 小满(5/21) → 对应地支"巳"
-// 5. 午月：芒种(6/6) - 夏至(6/21) → 对应地支"午"
-// 6. 未月：小暑(7/7) - 大暑(7/23) → 对应地支"未"
-// 7. 申月：立秋(8/8) - 处暑(8/23) → 对应地支"申"
-// 8. 酉月：白露(9/8) - 秋分(9/23) → 对应地支"酉"
-// 9. 戌月：寒露(10/8) - 霜降(10/23) → 对应地支"戌"
-// 10. 亥月：立冬(11/8) - 小雪(11/22) → 对应地支"亥"
-// 11. 子月：大雪(12/7) - 冬至(12/22) → 对应地支"子"
-// 12. 丑月：小寒(1/6) - 大寒(1/20) → 对应地支"丑"
 func (s *BaziService) calculateMonthColumn(date time.Time) models.BaziColumn {
 	year := date.Year()
 	yearGanIndex := (year - 4) % 10
